@@ -1,1 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="description" content="情侣两性偏好测试，探索你在亲密关系中的真实倾向">
+  <title>情侣两性偏好测试 | 深度探索版</title>
+  <!-- 引入外部资源 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#7C3AED', // 主色调：紫色
+            secondary: '#EC4899', // 辅助色：粉色
+            accent: '#06B6D4', // 强调色：青色
+            neutral: '#F3F4F6', // 中性色：浅灰
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .card-hover {
+        @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+      }
+      .btn-primary {
+        @apply bg-primary text-white py-3 px-8 rounded-full font-medium transition-all duration-300 hover:bg-primary/90 hover:shadow-lg active:scale-95;
+      }
+      .btn-secondary {
+        @apply bg-white text-primary border border-primary py-3 px-8 rounded-full font-medium transition-all duration-300 hover:bg-primary/5 active:scale-95;
+      }
+    }
+  </style>
+</head>
 
+<body class="bg-gradient-to-b from-purple-50 to-pink-50 min-h-screen font-sans text-gray-800 overflow-x-hidden">
+  <!-- 页面加载动画 -->
+  <div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+    <div class="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4"></div>
+    <p class="text-primary font-medium">加载中...</p>
+  </div>
+
+  <!-- 顶部导航栏 -->
+  <header class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm z-40 shadow-sm transition-all duration-300" id="header">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-primary flex items-center">
+        <i class="fa fa-heart mr-2 text-secondary"></i>
+        <span>情侣两性偏好测试</span>
+      </h1>
+      <button id="shareBtn" class="text-gray-600 hover:text-primary transition-colors">
+        <i class="fa fa-share-alt text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 pt-24 pb-20">
+    <!-- 欢迎页面 -->
+    <section id="welcomePage" class="block">
+      <div class="max-w-md mx-auto text-center">
+        <div class="relative mb-8">
+          <div class="w-32 h-32 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto flex items-center justify-center shadow-lg">
+            <i class="fa fa-heart text-white text-4xl"></i>
+          </div>
+          <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-accent rounded-full flex items-center justify-center shadow-md">
+            <i class="fa fa-question text-white"></i>
+          </div>
+        </div>
+        
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-gray-800 mb-4 text-shadow">
+          探索你在亲密关系中的<br>真实偏好
+        </h2>
+        <p class="text-gray-600 mb-8 leading-relaxed">
+          通过25道深度题目，全面了解你在情侣关系中的两性偏好倾向，
+          解锁亲密关系的和谐密码。
+        </p>
+        
+        <div class="space-y-4">
+          <button id="startTestBtn" class="btn-primary w-full">
+            开始测试
+          </button>
+          <p class="text-sm text-gray-500">
+            <i class="fa fa-lock mr-1"></i> 测试结果仅你可见，保护隐私
+          </p>
+        </div>
+        
+        <div class="mt-12 grid grid-cols-3 gap-4">
+          <div class="bg-white rounded-xl p-4 card-hover">
+            <div class="text-primary text-2xl mb-2"><i class="fa fa-list-ol"></i></div>
+            <h3 class="font-medium text-sm">25道题目</h3>
+            <p class="text-xs text-gray-500">深度检测</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 card-hover">
+            <div class="text-secondary text-2xl mb-2"><i class="fa fa-area-chart"></i></div>
+            <h3 class="font-medium text-sm">雷达图分析</h3>
+            <p class="text-xs text-gray-500">多维解读</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 card-hover">
+            <div class="text-accent text-2xl mb-2"><i class="fa fa-heart-o"></i></div>
+            <h3 class="font-medium text-sm">关系建议</h3>
+            <p class="text-xs text-gray-500">实用指南</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 测试页面 -->
+    <section id="testPage" class="hidden">
+      <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-sm font-medium text-gray-500">
+              问题 <span id="currentQuestion">1</span>/<span id="totalQuestions">25</span>
+            </span>
+            <div class="w-24 bg-gray-200 rounded-full h-2">
+              <div id="progressBar" class="bg-primary h-2 rounded-full" style="width: 4%"></div>
+            </div>
+          </div>
+          
+          <h3 id="questionText" class="text-xl font-bold mb-8 text-center">
+            问题加载中...
+          </h3>
+          
+          <div id="optionsContainer" class="space-y-3">
+            <!-- 选项将通过JS动态生成 -->
+          </div>
+        </div>
+        
+        <div class="flex justify-between">
+          <button id="prevBtn" class="btn-secondary opacity-50 cursor-not-allowed" disabled>
+            上一题
+          </button>
+          <button id="nextBtn" class="btn-primary">
+            下一题
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 结果页面 -->
+    <section id="resultPage" class="hidden">
+      <div class="max-w-md mx-auto">
+        <!-- 结果卡片 -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8 transform transition-all duration-500" id="resultCard">
+          <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white text-center">
+            <h2 class="text-2xl font-bold mb-2" id="resultTitle">你的两性偏好分析</h2>
+            <p class="opacity-90" id="resultSummary">基于25道题的多维偏好检测</p>
+          </div>
+          
+          <div class="p-6">
+            <!-- 雷达图容器 - 增大尺寸（关键修改） -->
+            <div class="mb-8 w-full" style="height: 400px;">
+              <canvas id="preferenceRadarChart" width="600" height="400"></canvas>
+            </div>
+            
+            <h3 class="text-xl font-bold text-center mb-4" id="resultPersonality">浪漫均衡型</h3>
+            
+            <div class="mb-6">
+              <h4 class="font-medium text-gray-700 mb-2">你的偏好特质：</h4>
+              <p class="text-gray-600 leading-relaxed" id="resultDescription">
+                你在亲密关系中追求平衡与和谐，既注重情感连接，也懂得适度的情趣表达。
+                你的偏好较为多元，能够在不同的亲密模式中找到舒适点，
+                这种灵活性让你在情侣关系中更具包容性和适应性。
+              </p>
+            </div>
+            
+            <!-- top3 偏好 -->
+            <div class="mb-6">
+              <h4 class="font-medium text-gray-700 mb-3">你的核心偏好TOP3：</h4>
+              <div id="topPreferences" class="grid grid-cols-3 gap-3">
+                <!-- 动态生成TOP3偏好 -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 深度解读 -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+          <h3 class="font-bold text-lg mb-4 flex items-center">
+            <i class="fa fa-lightbulb-o text-accent mr-2"></i>
+            关系相处建议
+          </h3>
+          <div class="space-y-3 text-gray-600" id="deepAnalysis">
+            <p>• 基于你的偏好特质，建议在亲密关系中保持开放沟通，与伴侣坦诚分享彼此的需求和边界。</p>
+            <p>• 你对情感连接的重视让你更容易建立深厚的伴侣关系，同时适度的情趣表达能为关系增添新鲜感。</p>
+            <p>• 注意在满足自身偏好的同时，尊重伴侣的舒适度和接受度，找到双方都满意的亲密模式。</p>
+            <p>• 定期与伴侣进行深度交流，了解彼此在亲密关系中的变化和需求，保持关系的活力和和谐。</p>
+          </div>
+        </div>
+        
+        <!-- 偏好细分说明 -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+          <h3 class="font-bold text-lg mb-4 flex items-center">
+            <i class="fa fa-info-circle text-accent mr-2"></i>
+            偏好维度说明
+          </h3>
+          <div class="space-y-2 text-gray-600 text-sm max-h-60 overflow-y-auto pr-2" id="traitExplanations">
+            <p><span class="font-medium text-primary">情调：</span>注重氛围营造和浪漫表达的程度</p>
+            <p><span class="font-medium text-primary">诱惑：</span>主动吸引和挑逗伴侣的倾向</p>
+            <p><span class="font-medium text-primary">纯爱：</span>重视情感纯粹性和精神连接的程度</p>
+            <p><span class="font-medium text-primary">NTR：</span>对伴侣与他人互动的特殊兴趣倾向</p>
+            <p><span class="font-medium text-primary">恋物：</span>对特定物品或身体部位的特殊偏好</p>
+            <p><span class="font-medium text-primary">跨性：</span>对跨性别伴侣的兴趣倾向</p>
+            <p><span class="font-medium text-primary">暴露：</span>在亲密关系中展示自我的开放程度</p>
+            <p><span class="font-medium text-primary">放纵：</span>追求无拘无束的亲密体验的倾向</p>
+            <p><span class="font-medium text-primary">叛逆：</span>挑战传统亲密模式的倾向</p>
+            <p><span class="font-medium text-primary">服从：</span>在亲密关系中愿意听从伴侣的程度</p>
+            <p><span class="font-medium text-primary">臣服：</span>深度顺从伴侣的倾向</p>
+            <p><span class="font-medium text-primary">屈辱：</span>对轻微羞辱性亲密行为的接受度</p>
+            <p><span class="font-medium text-primary">受虐：</span>对适度痛苦体验的兴趣倾向</p>
+            <p><span class="font-medium text-primary">保护：</span>保护或被伴侣保护的需求强度</p>
+            <p><span class="font-medium text-primary">征服：</span>征服或被征服的心理倾向</p>
+          </div>
+        </div>
+        
+        <!-- 分享和重新测试 -->
+        <div class="space-y-4">
+          <button id="shareResultBtn" class="btn-primary w-full flex items-center justify-center">
+            <i class="fa fa-share-alt mr-2"></i>
+            分享给伴侣
+          </button>
+          <button id="restartBtn" class="btn-secondary w-full">
+            重新测试
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 微信分享提示 -->
+  <div id="wechatShareTip" class="fixed top-0 left-0 right-0 bottom-0 bg-black/70 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 max-w-xs mx-4 text-center">
+      <div class="text-primary text-3xl mb-4">
+        <i class="fa fa-weixin"></i>
+      </div>
+      <h3 class="font-bold text-lg mb-2">分享测试结果</h3>
+      <p class="text-gray-600 mb-4">
+        点击右上角 <i class="fa fa-share-alt ml-1"></i> 图标，将测试结果分享给伴侣
+      </p>
+      <button id="closeShareTip" class="btn-primary w-full">
+        知道了
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 雷达图维度定义（已移除指定6个维度）
+    const radarDimensions = [
+      '情调', '诱惑', '纯爱', 'NTR', '恋物',
+      '跨性', '暴露', '放纵', '叛逆', '服从',
+      '臣服', '屈辱', '受虐', '保护', '征服'
+    ];
+
+    // 25道情侣两性偏好测试题目 - 已移除相关维度的选项配置
+    const questions = [
+      // 情感连接类（强化纯爱、情调、保护）
+      {
+        id: 1,
+        text: "在亲密关系中，你更看重什么？",
+        options: [
+          { id: "a", text: "深厚的情感连接和精神共鸣", value: { 纯爱: 170, 情调: 150, 保护: 160 } },
+          { id: "b", text: "充满激情和新鲜感的互动", value: { 诱惑: 165, 放纵: 155, 叛逆: 140 } },
+          { id: "c", text: "彼此尊重和舒适的相处模式", value: { 服从: 150, 保护: 145, 情调: 140 } },
+          { id: "d", text: "探索彼此的边界和新体验", value: { 暴露: 160, 叛逆: 155, 恋物: 145 } }
+        ]
+      },
+      {
+        id: 2,
+        text: "你更倾向于如何表达对伴侣的爱意？",
+        options: [
+          { id: "a", text: "温柔的呵护和细心的照顾", value: { 纯爱: 165, 保护: 170, 情调: 155 } },
+          { id: "b", text: "大胆的示爱和亲密的肢体接触", value: { 诱惑: 170, 暴露: 150, 放纵: 145 } },
+          { id: "c", text: "浪漫的氛围营造和惊喜", value: { 情调: 170, 纯爱: 155, 诱惑: 140 } },
+          { id: "d", text: "通过独特的方式展示专属感", value: { 恋物: 150, 征服: 145, 臣服: 155 } }
+        ]
+      },
+      
+      // 偏好倾向类（强化诱惑、恋物、服从）
+      {
+        id: 3,
+        text: "你对伴侣的身体特征或物品更关注哪方面？",
+        options: [
+          { id: "a", text: "整体气质和感觉", value: { 纯爱: 160, 情调: 155, 诱惑: 145 } },
+          { id: "b", text: "特定的身体部位或贴身物品", value: { 恋物: 170, 诱惑: 165, 征服: 150 } },
+          { id: "c", text: "健康的体态和活力", value: { 纯爱: 150, 保护: 160, 放纵: 145 } },
+          { id: "d", text: "独特的个人魅力和风格", value: { 情调: 160, 叛逆: 155, 诱惑: 150 } }
+        ]
+      },
+      {
+        id: 4,
+        text: "在亲密互动中，你更倾向于哪种角色？",
+        options: [
+          { id: "a", text: "主动引领，共同享受过程", value: { 诱惑: 165, 征服: 170, 情调: 165 } },
+          { id: "b", text: "被动接受，享受被引导的感觉", value: { 服从: 165, 臣服: 155, 受虐: 145 } },
+          { id: "c", text: "平等互动，相互配合协商", value: { 纯爱: 160, 情调: 155, 保护: 150 } },
+          { id: "d", text: "完全信任，深度顺从伴侣", value: { 臣服: 170, 保护: 145, 屈辱: 150 } }
+        ]
+      },
+      
+      // 边界与探索类（强化暴露、叛逆、放纵）
+      {
+        id: 5,
+        text: "你对在公共场合有轻微亲密行为的看法是？",
+        options: [
+          { id: "a", text: "完全接受，享受这种刺激感", value: { 暴露: 170, 放纵: 165, 叛逆: 160 } },
+          { id: "b", text: "可以接受，只要不过分", value: { 情调: 155, 诱惑: 150, 纯爱: 145 } },
+          { id: "c", text: "不太喜欢，更倾向私密空间", value: { 纯爱: 165, 保护: 160, 服从: 150 } },
+          { id: "d", text: "坚决反对，注重分寸和影响", value: { 纯爱: 170, 保护: 165, 臣服: 145 } }
+        ]
+      },
+      {
+        id: 6,
+        text: "你对尝试新鲜亲密体验的态度是？",
+        options: [
+          { id: "a", text: "非常感兴趣，愿意尝试", value: { 放纵: 170, 暴露: 165, 叛逆: 170 } },
+          { id: "b", text: "可以考虑，需要安全环境", value: { 恋物: 155, 保护: 160, 服从: 145 } },
+          { id: "c", text: "不太接受，偏好传统模式", value: { 纯爱: 170, 情调: 165, 保护: 160 } },
+          { id: "d", text: "坚决反对，保持原有方式", value: { 纯爱: 175, 保护: 170, 臣服: 150 } }
+        ]
+      },
+      
+      // 特殊偏好类（强化NTR、受虐、屈辱）
+      {
+        id: 7,
+        text: "你对伴侣与他人有暧昧互动的场景感受是？",
+        options: [
+          { id: "a", text: "会感到刺激和兴奋", value: { NTR: 170, 放纵: 165, 叛逆: 170 } },
+          { id: "b", text: "有一点好奇，但不会尝试", value: { NTR: 150, 叛逆: 155, 保护: 150 } },
+          { id: "c", text: "完全无法接受，会感到背叛", value: { 纯爱: 170, 情调: 165, 保护: 160 } },
+          { id: "d", text: "视情况而定，需要沟通", value: { 纯爱: 150, 保护: 165, 服从: 145 } }
+        ]
+      },
+      {
+        id: 8,
+        text: "你对亲密互动中轻微的疼痛体验看法是？",
+        options: [
+          { id: "a", text: "喜欢，能增强刺激感", value: { 受虐: 170, 臣服: 165, 屈辱: 160 } },
+          { id: "b", text: "可以接受轻微程度", value: { 受虐: 145, 服从: 150, 保护: 165 } },
+          { id: "c", text: "不太喜欢，追求舒适体验", value: { 纯爱: 165, 情调: 160, 保护: 160 } },
+          { id: "d", text: "完全拒绝，无法忍受", value: { 纯爱: 170, 保护: 175, 臣服: 140 } }
+        ]
+      },
+      {
+        id: 9,
+        text: "你对亲密关系中的轻微羞辱性语言或行为接受度是？",
+        options: [
+          { id: "a", text: "非常喜欢，能增强快感", value: { 羞辱: 170, 屈辱: 165, 臣服: 170 } },
+          { id: "b", text: "可以接受，视情况而定", value: { 羞辱: 150, 服从: 155, 保护: 160 } },
+          { id: "c", text: "不太接受，感觉不适", value: { 纯爱: 165, 情调: 160, 保护: 165 } },
+          { id: "d", text: "坚决反对，触及底线", value: { 纯爱: 175, 保护: 170, 臣服: 140 } }
+        ]
+      },
+      
+      // 性别偏好类（保留跨性，移除同性）
+      {
+        id: 10,
+        text: "你对不同性别身份伴侣的接受程度是？",
+        options: [
+          { id: "a", text: "开放包容，注重个人魅力", value: { 跨性: 170, 放纵: 160, 叛逆: 155 } },
+          { id: "b", text: "可以接受跨性别，不排斥", value: { 跨性: 155, 纯爱: 160, 保护: 150 } },
+          { id: "c", text: "只接受传统性别身份", value: { 纯爱: 165, 情调: 160, 保护: 155 } },
+          { id: "d", text: "不确定，看感觉和缘分", value: { 纯爱: 150, 放纵: 155, 叛逆: 150 } }
+        ]
+      },
+      {
+        id: 11,
+        text: "你对跨性别伴侣的接受程度是？",
+        options: [
+          { id: "a", text: "完全接受，有兴趣了解", value: { 跨性: 170, 放纵: 160, 叛逆: 155 } },
+          { id: "b", text: "可以接受，不排斥", value: { 跨性: 155, 纯爱: 160, 保护: 150 } },
+          { id: "c", text: "不太能接受", value: { 纯爱: 165, 情调: 160, 保护: 155 } },
+          { id: "d", text: "完全无法接受", value: { 纯爱: 170, 保护: 165, 臣服: 145 } }
+        ]
+      },
+      
+      // 权力互动类（移除控制、强迫，保留服从、臣服、征服）
+      {
+        id: 12,
+        text: "你更享受在亲密关系中哪种互动模式？",
+        options: [
+          { id: "a", text: "温柔引领，共同探索", value: { 征服: 170, 诱惑: 165, 情调: 160 } },
+          { id: "b", text: "完全顺从，听从伴侣安排", value: { 臣服: 170, 服从: 165, 受虐: 150 } },
+          { id: "c", text: "部分服从，保留底线", value: { 服从: 160, 保护: 165, 纯爱: 155 } },
+          { id: "d", text: "相互协商，平等互动", value: { 纯爱: 165, 情调: 160, 保护: 150 } }
+        ]
+      },
+      {
+        id: 13,
+        text: "当伴侣提出让你服从TA的要求时，你会？",
+        options: [
+          { id: "a", text: "非常乐意，享受被支配的感觉", value: { 臣服: 170, 服从: 165, 屈辱: 155 } },
+          { id: "b", text: "可以接受，只要不触及底线", value: { 服从: 155, 保护: 160, 纯爱: 150 } },
+          { id: "c", text: "不太愿意，喜欢平等互动", value: { 纯爱: 165, 情调: 160, 保护: 155 } },
+          { id: "d", text: "委婉沟通，寻找平衡", value: { 叛逆: 170, 征服: 165, 诱惑: 150 } }
+        ]
+      },
+      
+      // 场景偏好类（强化放纵、叛逆、暴露、情调）
+      {
+        id: 14,
+        text: "你对户外或非常规地点的亲密行为看法是？",
+        options: [
+          { id: "a", text: "非常喜欢，享受刺激感", value: { 暴露: 170, 叛逆: 165, 放纵: 165 } },
+          { id: "b", text: "可以尝试，需要隐蔽", value: { 暴露: 155, 情调: 150, 叛逆: 150 } },
+          { id: "c", text: "不太接受，偏好室内", value: { 纯爱: 165, 情调: 160, 保护: 160 } },
+          { id: "d", text: "完全拒绝，缺乏安全感", value: { 纯爱: 170, 保护: 175, 臣服: 145 } }
+        ]
+      },
+      {
+        id: 15,
+        text: "你对打破传统亲密模式的看法是？",
+        options: [
+          { id: "a", text: "非常支持，喜欢创新", value: { 叛逆: 170, 放纵: 165, 暴露: 160 } },
+          { id: "b", text: "可以接受，偶尔尝试", value: { 叛逆: 155, 情调: 150, 诱惑: 145 } },
+          { id: "c", text: "不太喜欢，偏好传统", value: { 纯爱: 165, 情调: 160, 保护: 160 } },
+          { id: "d", text: "完全反对，坚守传统", value: { 纯爱: 170, 保护: 165, 臣服: 145 } }
+        ]
+      },
+      
+      // 恋物与特殊偏好类（强化恋物）
+      {
+        id: 16,
+        text: "你对伴侣的特定物品（如衣物、饰品）有特殊感觉吗？",
+        options: [
+          { id: "a", text: "有，会被特定物品吸引", value: { 恋物: 170, 诱惑: 165, 放纵: 155 } },
+          { id: "b", text: "有一点，但不强烈", value: { 恋物: 150, 情调: 155, 诱惑: 145 } },
+          { id: "c", text: "没有，更关注人本身", value: { 纯爱: 165, 情调: 160, 保护: 155 } },
+          { id: "d", text: "完全没有感觉", value: { 纯爱: 170, 保护: 165, 臣服: 145 } }
+        ]
+      },
+      
+      // 角色扮演类（移除强迫、被迫相关）
+      {
+        id: 17,
+        text: "你对“角色扮演”亲密场景的看法是？",
+        options: [
+          { id: "a", text: "非常喜欢这种设定", value: { 叛逆: 170, 放纵: 165, 征服: 170 } },
+          { id: "b", text: "可以接受，需要双方自愿", value: { 恋物: 155, 保护: 165, 服从: 150 } },
+          { id: "c", text: "不太喜欢，偏好真实互动", value: { 纯爱: 165, 情调: 160, 保护: 160 } },
+          { id: "d", text: "完全拒绝，不符合喜好", value: { 纯爱: 175, 保护: 170, 臣服: 140 } }
+        ]
+      },
+      
+      // 补充各维度覆盖
+      {
+        id: 18,
+        text: "你在亲密关系中更倾向于哪种表达方式？",
+        options: [
+          { id: "a", text: "直接大胆，充满诱惑", value: { 诱惑: 170, 暴露: 160, 放纵: 155 } },
+          { id: "b", text: "温柔含蓄，注重情调", value: { 情调: 170, 纯爱: 160, 保护: 155 } },
+          { id: "c", text: "服从配合，满足伴侣", value: { 服从: 170, 臣服: 160, 保护: 150 } },
+          { id: "d", text: "温柔引领，共同享受", value: { 征服: 170, 诱惑: 160, 情调: 155 } }
+        ]
+      },
+      {
+        id: 19,
+        text: "你对亲密关系中的“规则设定”看法是？",
+        options: [
+          { id: "a", text: "非常重要，明确边界", value: { 保护: 170, 服从: 165, 情调: 160 } },
+          { id: "b", text: "顺其自然，不必刻意", value: { 纯爱: 165, 情调: 160, 放纵: 155 } },
+          { id: "c", text: "可以有一些基本规则", value: { 情调: 155, 保护: 160, 服从: 150 } },
+          { id: "d", text: "反感规则，追求自由", value: { 叛逆: 170, 放纵: 165, 暴露: 160 } }
+        ]
+      },
+      {
+        id: 20,
+        text: "你最常幻想的亲密场景是？",
+        options: [
+          { id: "a", text: "浪漫的二人世界，充满爱意", value: { 纯爱: 170, 情调: 165, 保护: 160 } },
+          { id: "b", text: "充满激情的突破常规场景", value: { 叛逆: 170, 放纵: 165, 暴露: 160 } },
+          { id: "c", text: "相互信任的深度互动", value: { 臣服: 165, 服从: 160, 征服: 165 } },
+          { id: "d", text: "与特定物品相关的亲密体验", value: { 恋物: 170, 诱惑: 165, 放纵: 155 } }
+        ]
+      },
+      {
+        id: 21,
+        text: "你对伴侣的“占有欲”态度是？",
+        options: [
+          { id: "a", text: "享受被占有，感觉被重视", value: { 臣服: 165, 征服: 155, 保护: 160 } },
+          { id: "b", text: "适度可以，过度反感", value: { 纯爱: 160, 情调: 155, 保护: 150 } },
+          { id: "c", text: "喜欢温柔呵护，而非占有", value: { 征服: 170, 诱惑: 165, 情调: 155 } },
+          { id: "d", text: "反感占有欲，注重自由", value: { 叛逆: 165, 放纵: 160, 纯爱: 150 } }
+        ]
+      },
+      {
+        id: 22,
+        text: "当伴侣有特殊恋物偏好时，你会？",
+        options: [
+          { id: "a", text: "尝试理解，愿意配合", value: { 恋物: 165, 服从: 160, 放纵: 155 } },
+          { id: "b", text: "保持距离，无法接受", value: { 纯爱: 170, 保护: 165, 臣服: 140 } },
+          { id: "c", text: "视情况而定，有底线", value: { 情调: 150, 保护: 160, 服从: 155 } },
+          { id: "d", text: "好奇探索，共同尝试", value: { 恋物: 170, 叛逆: 165, 放纵: 160 } }
+        ]
+      },
+      {
+        id: 23,
+        text: "你在亲密关系中更注重什么体验？",
+        options: [
+          { id: "a", text: "情感共鸣和安全感", value: { 纯爱: 170, 保护: 165, 情调: 155 } },
+          { id: "b", text: "刺激感和新鲜感", value: { 放纵: 170, 叛逆: 165, 暴露: 160 } },
+          { id: "c", text: "深度信任和默契", value: { 征服: 170, 臣服: 165, 情调: 160 } },
+          { id: "d", text: "特殊偏好的满足", value: { 恋物: 170, NTR: 155, 受虐: 150 } }
+        ]
+      },
+      {
+        id: 24,
+        text: "你对亲密关系中的“公开展示”接受度是？",
+        options: [
+          { id: "a", text: "完全接受，乐于展示", value: { 暴露: 170, 放纵: 165, 叛逆: 160 } },
+          { id: "b", text: "可以接受，适度展示", value: { 情调: 155, 诱惑: 150, 纯爱: 145 } },
+          { id: "c", text: "不太接受，保持私密", value: { 纯爱: 165, 保护: 160, 服从: 150 } },
+          { id: "d", text: "完全拒绝，注重隐私", value: { 纯爱: 170, 保护: 165, 臣服: 145 } }
+        ]
+      },
+      {
+        id: 25,
+        text: "你认为亲密关系中最重要的原则是？",
+        options: [
+          { id: "a", text: "相互尊重，自愿平等", value: { 纯爱: 170, 保护: 165, 情调: 160 } },
+          { id: "b", text: "开放包容，共同探索", value: { 放纵: 165, 叛逆: 160, 情调: 155 } },
+          { id: "c", text: "信任彼此，安全第一", value: { 保护: 170, 服从: 160, 纯爱: 165 } },
+          { id: "d", text: "真实表达，不设伪装", value: { 暴露: 165, 纯爱: 160, 放纵: 155 } }
+        ]
+      }
+    ];
+
+    // 结果类型数据（已调整主要特质，移除相关维度）
+    const resultTypes = [
+      {
+        type: "romantic",
+        title: "浪漫纯爱型",
+        mainTraits: ["纯爱", "情调", "保护"],
+        description: "你在亲密关系中极度重视情感连接和精神共鸣，偏好温柔浪漫的互动模式。你更看重彼此的爱意表达和安全感，对过于激进或特殊的亲密方式接受度较低。你的亲密关系建立在深厚的情感基础上，注重彼此的尊重和呵护。",
+        analysis: [
+          "• 建议在亲密关系中保持浪漫的表达，定期为伴侣制造惊喜，强化情感连接。",
+          "• 你对安全感的需求较高，需要与伴侣建立明确的信任关系，避免过于冒险的尝试。",
+          "• 适合与同样注重情感连接的伴侣相处，共同营造温馨舒适的亲密氛围。",
+          "• 可以适度尝试一些温和的情趣方式，为关系增添新鲜感，但需以双方舒适为前提。"
+        ],
+        color: "from-purple-500 to-pink-500"
+      },
+      {
+        type: "passionate",
+        title: "激情探索型",
+        mainTraits: ["诱惑", "放纵", "叛逆"],
+        description: "你在亲密关系中充满激情和冒险精神，乐于尝试新鲜事物，突破传统亲密模式的束缚。你享受刺激感和新鲜感，对各种亲密方式都有较高的接受度，喜欢在探索中增进彼此的连接。你的亲密关系充满活力和变化。",
+        analysis: [
+          "• 建议与伴侣保持开放的沟通，坦诚分享彼此的偏好和边界，确保探索过程安全愉快。",
+          "• 你的好奇心和冒险精神是关系的保鲜剂，但需注意不要忽视情感连接的重要性。",
+          "• 适合与同样喜欢探索、接受度高的伴侣相处，共同尝试新的亲密体验。",
+          "• 在追求刺激的同时，记得尊重伴侣的舒适度，避免过度冒险或触及对方底线。"
+        ],
+        color: "from-red-500 to-orange-500"
+      },
+      {
+        type: "trustBond",
+        title: "信任默契型",
+        mainTraits: ["服从", "臣服", "征服"],
+        description: "你在亲密关系中偏好基于深度信任的互动模式，享受彼此默契的配合和情感共鸣。你重视伴侣间的相互理解和支持，能够在信任的基础上适度表达自己的偏好，这种模式让你的亲密关系更加稳固和和谐。",
+        analysis: [
+          "• 建议与伴侣持续深化信任关系，通过坦诚沟通了解彼此的需求和边界。",
+          "• 你的默契感是关系的核心优势，可通过共同经历和深度交流进一步强化。",
+          "• 适合与注重信任和理解的伴侣相处，共同营造相互支持的亲密氛围。",
+          "• 在互动中保持适度的灵活性，既能坚持自我，也能为伴侣做出适当妥协。"
+        ],
+        color: "from-blue-500 to-indigo-500"
+      },
+      {
+        type: "specialPreference",
+        title: "特殊偏好型",
+        mainTraits: ["恋物", "NTR", "受虐"],
+        description: "你在亲密关系中有较为明确的特殊偏好，这些偏好是你获得亲密满足感的重要来源。你对特定的亲密模式或场景有较强的兴趣，能够在符合自身偏好的互动中获得深度满足。你的亲密关系具有鲜明的个人特色。",
+        analysis: [
+          "• 建议与伴侣坦诚沟通自己的特殊偏好，寻找能够理解并接受的伴侣，避免隐瞒或伪装。",
+          "• 特殊偏好需要在双方自愿、安全、私密的前提下进行，确保不伤害他人或违反公序良俗。",
+          "• 适合与同样有类似偏好或接受度极高的伴侣相处，共同创造符合双方需求的亲密环境。",
+          "• 保持开放的心态，不要将特殊偏好视为全部，仍需注重情感连接和日常相处的和谐。"
+        ],
+        color: "from-green-500 to-teal-500"
+      },
+      {
+        type: "balanced",
+        title: "均衡包容型",
+        mainTraits: ["情调", "纯爱", "放纵"],
+        description: "你在亲密关系中追求各方面的平衡，既注重情感连接，也懂得享受亲密的乐趣，对各种亲密方式都有一定的接受度。你的偏好较为多元，能够灵活适应不同的亲密模式，这种包容性让你在情侣关系中更具优势。",
+        analysis: [
+          "• 建议在亲密关系中保持开放和灵活的态度，根据伴侣的需求和自身感受调整亲密模式。",
+          "• 你的包容性是关系和谐的重要保障，但需明确自己的底线，不做违背自身意愿的事情。",
+          "• 适合与大多数类型的伴侣相处，能够在不同的亲密模式中找到双方都满意的平衡点。",
+          "• 定期与伴侣沟通亲密关系的感受和需求，不断调整和优化相处模式，保持关系的活力。"
+        ],
+        color: "from-yellow-500 to-amber-500"
+      }
+    ];
+
+    // 全局变量 - 最低分改为20分
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let preferenceScores = {}; // 存储各维度得分
+    const MIN_SCORE = 20; // 最低基础分（改为20分）
+    const MAX_SCORE = 100; // 最高得分
+
+    // 初始化偏好得分（设置最低20分）
+    radarDimensions.forEach(dimension => {
+      preferenceScores[dimension] = MIN_SCORE;
+    });
+
+    // DOM元素
+    const loader = document.getElementById('loader');
+    const welcomePage = document.getElementById('welcomePage');
+    const testPage = document.getElementById('testPage');
+    const resultPage = document.getElementById('resultPage');
+    const startTestBtn = document.getElementById('startTestBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const shareResultBtn = document.getElementById('shareResultBtn');
+    const wechatShareTip = document.getElementById('wechatShareTip');
+    const closeShareTip = document.getElementById('closeShareTip');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const currentQuestion = document.getElementById('currentQuestion');
+    const totalQuestions = document.getElementById('totalQuestions');
+    const progressBar = document.getElementById('progressBar');
+    const header = document.getElementById('header');
+    const resultCard = document.getElementById('resultCard');
+    const topPreferences = document.getElementById('topPreferences');
+
+    // 页面加载完成后执行
+    window.addEventListener('DOMContentLoaded', () => {
+      // 模拟加载过程
+      setTimeout(() => {
+        loader.classList.add('opacity-0');
+        setTimeout(() => {
+          loader.classList.add('hidden');
+        }, 300);
+      }, 1000);
+
+      // 监听滚动事件，改变导航栏样式
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+          header.classList.add('shadow');
+          header.classList.remove('bg-white/80');
+          header.classList.add('bg-white');
+        } else {
+          header.classList.remove('shadow');
+          header.classList.add('bg-white/80');
+          header.classList.remove('bg-white');
+        }
+      });
+
+      // 检测是否在微信中打开
+      const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+      if (!isWeChat) {
+        alert('建议在微信中打开本页面，以获得最佳体验！');
+      }
+    });
+
+    // 开始测试按钮点击事件
+    startTestBtn.addEventListener('click', () => {
+      welcomePage.classList.add('hidden');
+      testPage.classList.remove('hidden');
+      testPage.classList.add('block');
+      renderCurrentQuestion();
+    });
+
+    // 上一题按钮点击事件
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderCurrentQuestion();
+        
+        // 更新按钮状态
+        if (currentQuestionIndex === 0) {
+          prevBtn.disabled = true;
+          prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        nextBtn.textContent = '下一题';
+      }
+    });
+
+    // 下一题按钮点击事件
+    nextBtn.addEventListener('click', () => {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      
+      if (!selectedOption) {
+        // 没有选择选项时提示
+        optionsContainer.classList.add('animate-shake');
+        setTimeout(() => {
+          optionsContainer.classList.remove('animate-shake');
+        }, 500);
+        return;
+      }
+
+      // 保存当前答案并更新得分
+      const selectedValue = JSON.parse(selectedOption.getAttribute('data-value'));
+      userAnswers[currentQuestionIndex] = selectedValue;
+      
+      // 更新各维度得分（在最低分20基础上累加，权重调整为更高）
+      Object.entries(selectedValue).forEach(([dimension, score]) => {
+        if (preferenceScores.hasOwnProperty(dimension)) {
+          // 计算增量：(score - 基础分100) * 0.16（25题总权重4.0，每题权重0.16）
+          // 确保最终得分在20-100之间
+          const increment = Math.round((score - 100) * 0.16);
+          preferenceScores[dimension] = Math.min(preferenceScores[dimension] + increment, MAX_SCORE);
+        }
+      });
+
+      // 检查是否是最后一题
+      if (currentQuestionIndex === questions.length - 1) {
+        // 计算结果
+        calculateResult();
+        // 显示结果页面
+        testPage.classList.add('hidden');
+        resultPage.classList.remove('hidden');
+        resultPage.classList.add('block');
+        
+        // 结果卡片动画
+        setTimeout(() => {
+          resultCard.classList.add('scale-100');
+          resultCard.classList.remove('scale-95', 'opacity-0');
+        }, 100);
+      } else {
+        // 前往下一题
+        currentQuestionIndex++;
+        renderCurrentQuestion();
+        
+        // 更新按钮状态
+        prevBtn.disabled = false;
+        prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        
+        // 如果是最后一题，更改按钮文本
+        if (currentQuestionIndex === questions.length - 1) {
+          nextBtn.textContent = '查看结果';
+        }
+      }
+    });
+
+    // 重新测试按钮点击事件
+    restartBtn.addEventListener('click', () => {
+      // 重置状态
+      currentQuestionIndex = 0;
+      userAnswers = [];
+      preferenceScores = {};
+      
+      // 重新初始化偏好得分（设置最低20分）
+      radarDimensions.forEach(dimension => {
+        preferenceScores[dimension] = MIN_SCORE;
+      });
+      
+      // 切换页面
+      resultPage.classList.add('hidden');
+      testPage.classList.remove('hidden');
+      testPage.classList.add('block');
+      
+      // 重新渲染第一题
+      renderCurrentQuestion();
+    });
+
+    // 分享按钮点击事件
+    shareBtn.addEventListener('click', () => {
+      wechatShareTip.classList.remove('hidden');
+    });
+
+    shareResultBtn.addEventListener('click', () => {
+      wechatShareTip.classList.remove('hidden');
+    });
+
+    // 关闭分享提示
+    closeShareTip.addEventListener('click', () => {
+      wechatShareTip.classList.add('hidden');
+    });
+
+    // 渲染当前题目
+    function renderCurrentQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // 更新题目信息
+      questionText.textContent = question.text;
+      currentQuestion.textContent = currentQuestionIndex + 1;
+      totalQuestions.textContent = questions.length;
+      
+      // 更新进度条
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      
+      // 清空选项容器
+      optionsContainer.innerHTML = '';
+      
+      // 渲染选项
+      question.options.forEach(option => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'bg-neutral rounded-xl p-4 flex items-center cursor-pointer transition-all duration-200 hover:bg-primary/5';
+        optionElement.innerHTML = `
+          <input type="radio" id="option-${option.id}" name="option" value="${option.id}" 
+                 data-value='${JSON.stringify(option.value)}' 
+                 class="w-5 h-5 text-primary focus:ring-primary/50">
+          <label for="option-${option.id}" class="ml-3 flex-grow cursor-pointer">${option.text}</label>
+        `;
+        
+        // 如果已经有答案，设置选中状态
+        if (userAnswers[currentQuestionIndex]) {
+          const storedValue = JSON.stringify(userAnswers[currentQuestionIndex]);
+          if (JSON.stringify(option.value) === storedValue) {
+            const radio = optionElement.querySelector('input');
+            radio.checked = true;
+            optionElement.classList.add('border-2', 'border-primary', 'bg-primary/10');
+          }
+        }
+        
+        // 选项点击事件
+        optionElement.addEventListener('click', () => {
+          // 移除其他选项的选中样式
+          document.querySelectorAll('[name="option"]').forEach(radio => {
+            radio.parentElement.classList.remove('border-2', 'border-primary', 'bg-primary/10');
+          });
+          
+          // 设置当前选项的选中样式
+          const radio = optionElement.querySelector('input');
+          radio.checked = true;
+          optionElement.classList.add('border-2', 'border-primary', 'bg-primary/10');
+        });
+        
+        optionsContainer.appendChild(optionElement);
+      });
+    }
+
+    // 计算测试结果
+    function calculateResult() {
+      // 格式化得分（确保在20-100之间）
+      Object.keys(preferenceScores).forEach(dimension => {
+        preferenceScores[dimension] = Math.min(Math.round(preferenceScores[dimension]), MAX_SCORE);
+        preferenceScores[dimension] = Math.max(preferenceScores[dimension], MIN_SCORE);
+      });
+      
+      // 找出TOP3偏好
+      const top3 = Object.entries(preferenceScores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+      
+      // 生成TOP3偏好HTML
+      topPreferences.innerHTML = '';
+      top3.forEach(([trait, score], index) => {
+        const badgeColors = ['bg-primary', 'bg-secondary', 'bg-accent'];
+        const traitElement = document.createElement('div');
+        traitElement.className = `${badgeColors[index]} text-white rounded-lg p-3 text-center`;
+        traitElement.innerHTML = `
+          <div class="text-xs font-medium mb-1">TOP${index + 1}</div>
+          <div class="font-bold">${trait}</div>
+          <div class="text-xs opacity-90">${score}分</div>
+        `;
+        topPreferences.appendChild(traitElement);
+      });
+      
+      // 匹配结果类型
+      let resultType = resultTypes.find(type => {
+        // 检查TOP3中是否包含该类型的主要特质
+        const matchCount = type.mainTraits.filter(trait => 
+          top3.some(([traitName]) => traitName === trait)
+        ).length;
+        return matchCount >= 2;
+      });
+      
+      // 如果没有找到匹配的类型，默认使用均衡型
+      if (!resultType) {
+        resultType = resultTypes.find(type => type.type === 'balanced');
+      }
+      
+      // 更新结果页面
+      document.getElementById('resultPersonality').textContent = resultType.title;
+      document.getElementById('resultDescription').textContent = resultType.description;
+      
+      // 更新深度分析
+      const deepAnalysis = document.getElementById('deepAnalysis');
+      deepAnalysis.innerHTML = '';
+      resultType.analysis.forEach(item => {
+        const p = document.createElement('p');
+        p.innerHTML = item;
+        deepAnalysis.appendChild(p);
+      });
+      
+      // 更新结果卡片背景色
+      const gradientElement = resultCard.querySelector('div[class*="bg-gradient-to-r"]');
+      gradientElement.className = `bg-gradient-to-r ${resultType.color} p-6 text-white text-center`;
+      
+      // 初始化结果卡片样式
+      resultCard.classList.add('scale-95', 'opacity-0');
+      
+      // 绘制雷达图
+      drawRadarChart();
+    }
+
+    // 绘制雷达图（调整刻度范围为20-100，移除相关维度）
+    function drawRadarChart() {
+      const ctx = document.getElementById('preferenceRadarChart').getContext('2d');
+      
+      // 准备雷达图数据
+      const labels = radarDimensions;
+      const data = radarDimensions.map(dimension => preferenceScores[dimension]);
+      
+      // 销毁已存在的图表
+      if (window.radarChart) {
+        window.radarChart.destroy();
+      }
+      
+      // 创建新图表（刻度范围改为20-100）
+      window.radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '你的偏好得分',
+            data: data,
+            backgroundColor: 'rgba(124, 58, 237, 0.2)',
+            borderColor: 'rgba(124, 58, 237, 1)',
+            borderWidth: 3, // 加粗边框
+            pointBackgroundColor: 'rgba(124, 58, 237, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(124, 58, 237, 1)',
+            pointRadius: 5, // 增大数据点
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false, // 允许自定义尺寸
+          scales: {
+            r: {
+              // 配置五层网格（20、40、60、80、100）
+              min: MIN_SCORE, // 最低分20
+              max: MAX_SCORE, // 最高分100
+              ticks: {
+                stepSize: 20, // 每20分一个刻度，共5层（20、40、60、80、100）
+                backdropColor: 'rgba(255, 255, 255, 0.9)', // 刻度背景更清晰
+                color: '#6B7280',
+                font: {
+                  size: 12, // 增大刻度文字
+                  family: 'Inter, sans-serif',
+                  weight: '500'
+                },
+                callback: function(value) {
+                  return value + '分';
+                }
+              },
+              // 角度线（连接中心到每个标签的线）
+              angleLines: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.15)',
+                lineWidth: 1.5 // 加粗角度线
+              },
+              // 网格线（同心圆）
+              grid: {
+                color: 'rgba(0, 0, 0, 0.15)',
+                lineWidth: 1.5, // 加粗网格线
+                drawBorder: true
+              },
+              // 标签配置（关键修改：增大标签字体和调整间距）
+              pointLabels: {
+                font: {
+                  size: 13, // 增大标签字体
+                  family: 'Inter, sans-serif',
+                  weight: '600'
+                },
+                color: '#4B5563',
+                padding: 20 // 增加标签与图表的距离，避免拥挤
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                font: {
+                  size: 14, // 增大图例文字
+                  family: 'Inter, sans-serif'
+                },
+                padding: 25
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleFont: {
+                size: 15,
+                family: 'Inter, sans-serif',
+                weight: '600'
+              },
+              bodyFont: {
+                size: 14,
+                family: 'Inter, sans-serif'
+              },
+              padding: 15,
+              cornerRadius: 8,
+              displayColors: true,
+              boxPadding: 5,
+              callbacks: {
+                label: function(context) {
+                  return `${context.label}: ${context.raw}分`;
+                }
+              }
+            }
+          },
+          elements: {
+            line: {
+              tension: 0.2
+            }
+          },
+          // 增大图表内边距，让内容更舒展
+          layout: {
+            padding: {
+              top: 10,
+              right: 20,
+              bottom: 10,
+              left: 20
+            }
+          }
+        }
+      });
+    }
+
+    // 添加动画样式
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+      .animate-shake {
+        animation: shake 0.5s ease-in-out;
+      }
+      .scale-95 {
+        transform: scale(0.95);
+      }
+      .scale-100 {
+        transform: scale(1);
+      }
+      .opacity-0 {
+        opacity: 0;
+      }
+      /* 自定义滚动条样式 */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c1b2ff;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a892fe;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
